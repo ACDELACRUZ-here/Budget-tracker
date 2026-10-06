@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="images/saving.png">
+  <title>Budget Tracker — Track Your Finances</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Merriweather:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="main-nav">
+      <div class="nav-container">
+        <h1 class="site-logo text-white">Budget Tracker</h1>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="Toggle navigation menu">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="nav" aria-label="Main navigation">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html" aria-current="page">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="forms.html">Add Transaction</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="tips.html">Tips</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="wage.html">Wage Estimator</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container my-5">
+    <div class="row g-4">
+      <div class ="col-md-4">
+        <div class="p-4 border">
+          <h2>Recent Transactions</h2>
+          <table id="transaction-list" class="table table-sm">
+            <caption id="transactionCaption">List of recent transactions</caption>
+            <thead>
+              <tr>
+                <th id="descHeader" scope="col">Description</th>
+                <th id="amountHeader" scope="col">Amount</th>
+                <th id="actionsHeader" scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="3">No transactions yet. Add one to get started.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border">
+          <h3>Spending Overview</h3>
+          <canvas id="expense-chart" class="img-fluid mt-3"></canvas>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border">
+          <h3>Financial Summary</h3>
+          <p><strong>Total Income:</strong> $<span id="total-income">0.00</span></p>
+          <p><strong>Total Expenses:</strong> $<span id="total-expenses">0.00</span></p>
+          <p><strong>Remaining:</strong> $<span id="remaining-amount">0.00</span></p>
+        </div>
+      </div>
+      <div class="container my-4">
+        <h4>Data controls</h4>
+        <button id="export-btn" class ="btn btn-primary me-2" aria-label="Export data as JSON">Export Data</button>
+        <label for="import-file" class="visually-hidden">Import JSON file</label>
+        <input type="file" id="import-file" accept="application/json" class="form-control-file d-inline-block" aria-label="Import JSON file">
+        <button id="import-btn" class ="btn btn-secondary ms-2" aria-label="Import data from JSON">Import Data</button>
+        <button id="clear-btn" class="btn btn-danger ms-3" aria-label="Clear all stored data">Clear All Data</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center py-3 bg-success text-white">
+    <p><a class="text-white text-decoration-underline" href="https://consumer.gov/budget">Learn more about budgeting</a></p>
+  </footer>
+
+  <!-- Edit Transaction Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Transaction</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-form">
+            <input type="hidden" id="edit-id" name="edit-id">
+            <div class="mb-3">
+              <label for="edit-type" class="form-label">Type</label>
+              <select id="edit-type" name="edit-type" class="form-select">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="edit-amount" class="form-label">Amount</label>
+              <input type="number" id="edit-amount" name="edit-amount" class="form-control" step="0.01">
+            </div>
+            <div class="mb-3">
+              <label for="edit-category" class="form-label">Category</label>
+              <input type="text" id="edit-category" name="edit-category" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="edit-date" class="form-label">Date</label>
+              <input type="date" id="edit-date" name="edit-date" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="edit-note" class="form-label">Note</label>
+              <input type="text" id="edit-note" name="edit-note" class="form-control">
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" id="edit-essential" name="edit-essential" class="form-check-input">
+              <label for="edit-essential" class="form-check-label">Essential</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="save-edit-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <script src="scripts/Function.js"></script>
+  <script>
+    function handleTransactionsUpdate() {
+      if (typeof renderTransactionList === 'function') renderTransactionList();
+      if (typeof renderChart === 'function') renderChart();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      handleTransactionsUpdate();
+      const saveBtn = document.getElementById('save-edit-btn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', onSaveEdit);
+      }
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'SS_Transaction') handleTransactionsUpdate();
+      });
+      if ('BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('transactions');
+        bc.addEventListener('message', function (ev) {
+          if (ev && ev.data && ev.data.type === 'updated') handleTransactionsUpdate();
+        });
+      }
+    },);
+    document.addEventListener("DOMContentLoaded", () => {
+
+      document.getElementById("export-btn").addEventListener("click", () => {
+        if (typeof exportJson === "function") {
+          exportJson();
+        } else {
+          console.warn("exportJson function missing");
+        }
+      });
+
+      document.getElementById("import-btn").addEventListener("click", (e) => {
+        const fileInput = document.getElementById("import-file");
+        if (!fileInput.files.length) {
+          alert("Please choose a JSON file first.");
+          return;
+        }
+        importJson({ target: { files: fileInput.files } });
+      });
+
+      document.getElementById("clear-btn").addEventListener("click", () => {
+        if (confirm("Are you sure you want to DELETE ALL data?")) {
+          if (typeof clear === "function") clear();
+        }
+      });
+    });
+
+
+  </script>
+</body>
+</html>

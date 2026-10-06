@@ -1,0 +1,107 @@
+
+.main-nav {
+  background-color: #1e4620;
+  padding: 0.0em;
+  margin: 0em 0;
+}
+
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 3em;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a:focus {
+  background-color: #1e4620;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1 0 auto;
+}
+footer {
+  width: 100%;
+  text-align: center;
+  background-color: #1e4620;
+  color: white;
+  padding: 1rem 0;
+  flex-shrink: 0;
+}
+/* Hide hamburger menu toggle by default */
+.menu-toggle {
+  display: none;
+}
+
+/* Hide hamburger menu icon by default (for screens above 600px) */
+.menu-icon {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  color: white;
+  background-color: #2ecc71;
+}
+
+.main-nav .nav {
+  display: flex;
+  justify-content: center;
+  gap: 3em;
+}
+
+/* Mobile styles - screens below 600px */
+@media (max-width: 600px) {
+  .row > [class*='col-'] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  main .row {
+    gap: 1rem;
+  }
+  .main-nav .nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Show hamburger menu icon on mobile */
+  .menu-icon {
+    display: block;
+  }
+
+  /* Hide nav by default on mobile, show when hamburger is checked */
+  .main-nav .nav {
+    display: none;
+    flex-direction: column;
+    background-color: #1e4620;
+    width: 100%;
+    text-align: center;
+  }
+
+  .menu-toggle:checked + .menu-icon + .nav {
+    display: flex;
+  }
+
+  .main-nav .nav a {
+    display: block;
+    padding: 1rem;
+  }
+}
